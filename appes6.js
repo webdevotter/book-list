@@ -56,6 +56,44 @@ class UI {
   }
 }
 
+// Local Storage Class
+
+class Store {
+
+  static getBooks() {
+    let books;
+    if(localStorage.getItem('books') === null) {
+      books = [];
+    } else {
+      books = JSON.parse(localStorage.getItem('books'));
+    }
+
+    return books;
+  }
+
+  static displayBooks() {
+    const books = Store.getBooks();
+
+    books.forEach(function(book){
+      const ui = new UI;
+
+      // Add book to UI
+      ui.addBookToList(book);
+    });
+  }
+
+  static addBook(book) {
+    const books = Store.getBooks();
+
+    books.push(book);
+    localStorage.setItem('books', JSON.stringify(books));
+  }
+
+  static removeBook() {
+
+  }
+}
+
 // Event Listener for add book
 document.getElementById('book-form').addEventListener('submit', function(e){
   const title = document.getElementById('title').value,
@@ -75,14 +113,18 @@ document.getElementById('book-form').addEventListener('submit', function(e){
   } else {
 
     // Add book to list
- ui.addBookToList(book);
+    ui.addBookToList(book);
 
- // Show success
+    // Add to LS
 
- ui.showAlert('Book Added!', 'success');
+    Store.addBook(book);
 
- // Clear fields
- ui.clearFields();
+    // Show success
+
+    ui.showAlert('Book Added!', 'success');
+
+    // Clear fields
+    ui.clearFields();
 
   } 
 
